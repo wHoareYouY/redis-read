@@ -2822,6 +2822,7 @@ void initServer(void) {
     /* Create the timer callback, this is our way to process many background
      * operations incrementally, like clients timeout, eviction of unaccessed
      * expired keys and so forth. */
+     // 创建定时任务，定期执行 serverCron 回调函数
     if (aeCreateTimeEvent(server.el, 1, serverCron, NULL, NULL) == AE_ERR) {
         serverPanic("Can't create event loop timers.");
         exit(1);
@@ -7145,6 +7146,8 @@ int main(int argc, char **argv) {
 
     char *exec_name = strrchr(argv[0], '/');
     if (exec_name == NULL) exec_name = argv[0];
+    // 检查是否为哨兵模式启动
+    // 当执行 redis-sentinel 或 --sentinel 时，sentinel_mode 为 1
     server.sentinel_mode = checkForSentinelMode(argc,argv, exec_name);
     initServerConfig();
     ACLInit(); /* The ACL subsystem must be initialized ASAP because the
@@ -7162,8 +7165,11 @@ int main(int argc, char **argv) {
     /* We need to init sentinel right now as parsing the configuration file
      * in sentinel mode will have the effect of populating the sentinel
      * data structures with master nodes to monitor. */
+     // 哨兵模式的初始化
     if (server.sentinel_mode) {
+        // 指定当前服务的默认端口
         initSentinelConfig();
+        // 初始化 sentinelState 结构体中的一些成员和数据结构
         initSentinel();
     }
 
@@ -7291,6 +7297,7 @@ int main(int argc, char **argv) {
         }
 
         loadServerConfig(server.configfile, config_from_stdin, options);
+        // 加载哨兵配置
         if (server.sentinel_mode) loadSentinelConfigFromQueue();
         sdsfree(options);
     }

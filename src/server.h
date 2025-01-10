@@ -1655,6 +1655,7 @@ struct redisServer {
     int child_type;             /* Type of current child */
     redisAtomic int module_gil_acquring; /* Indicates whether the GIL is being acquiring by the main thread. */
     /* Networking */
+    // 当前服务的监听端口
     int port;                   /* TCP listening port */
     int tls_port;               /* TLS listening port */
     int tcp_backlog;            /* TCP listen() backlog */
@@ -2119,6 +2120,7 @@ struct redisServer {
     char *aof_rewrite_cpulist; /* cpu affinity list of aof rewrite process. */
     char *bgsave_cpulist; /* cpu affinity list of bgsave process. */
     /* Sentinel config */
+    // 哨兵配置
     struct sentinelConfig *sentinel_config; /* sentinel config to load at startup time. */
     /* Coordinate failover info */
     mstime_t failover_end_time; /* Deadline for failover command. */
